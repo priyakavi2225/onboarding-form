@@ -1,0 +1,6 @@
+{
+  "name": "Educational Platform Onboarding",
+  "description": "A modern, multi-step onboarding wizard and profile configuration flow for a premium educational technology platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
