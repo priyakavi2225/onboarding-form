@@ -116,7 +116,7 @@ export default function NotificationsStep({ data, onChange, onNext, onBack }: No
           className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium text-xs rounded-xl shadow-md transition-all duration-150"
           id="btn-next-notifications"
         >
-          Next Step
+          Submit Application
         </button>
       </div>
     </motion.div>

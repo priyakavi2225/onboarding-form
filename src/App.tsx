@@ -7,14 +7,19 @@ import RoleStep from './components/RoleStep';
 import EducationalStep from './components/EducationalStep';
 import PreferencesStep from './components/PreferencesStep';
 import NotificationsStep from './components/NotificationsStep';
-import PrivacyStep from './components/PrivacyStep';
-import CompletionStep from './components/CompletionStep';
 import Dashboard from './components/Dashboard';
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard';
 import { Sparkles, ArrowRight, User, Check, RefreshCw } from 'lucide-react';
 
 const STORAGE_KEY = 'eduquest_onboarding_data_v2';
 
 export default function App() {
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
+    return !!localStorage.getItem('eduquest_admin_token');
+  });
+
   const [data, setData] = useState<OnboardingData>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -26,6 +31,19 @@ export default function App() {
     }
     return INITIAL_ONBOARDING_DATA;
   });
+
+  // Auto-reset if query parameter reset=true is present (useful for clearing session cache)
+  useEffect(() => {
+    if (window.location.search.includes('reset=true')) {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+        setData(INITIAL_ONBOARDING_DATA);
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } catch (e) {
+        console.error('Failed to auto-reset onboarding data:', e);
+      }
+    }
+  }, []);
 
   // Persist state updates
   useEffect(() => {
@@ -96,12 +114,23 @@ export default function App() {
     }));
   };
 
+  const handleAdminLoginSuccess = (token: string) => {
+    localStorage.setItem('eduquest_admin_token', token);
+    setIsAdminLoggedIn(true);
+  };
+
+  const handleAdminLogout = () => {
+    localStorage.removeItem('eduquest_admin_token');
+    setIsAdminLoggedIn(false);
+    setIsAdminMode(false);
+  };
+
   const setStep = (step: number) => {
     setData((prev) => ({ ...prev, step }));
   };
 
   const handleNext = () => {
-    if (data.step < 8) {
+    if (data.step < 6) {
       setStep(data.step + 1);
     }
   };
@@ -112,8 +141,43 @@ export default function App() {
     }
   };
 
-  const handleCompleteOnboarding = () => {
+  const fetchOnboardingData = async (email: string) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/onboarding/${encodeURIComponent(email)}`);
+      if (response.ok) {
+        const fetchedData = await response.json();
+        setData(fetchedData);
+        return true;
+      }
+    } catch (e) {
+      console.error('Failed to fetch onboarding data from backend:', e);
+    }
+    return false;
+  };
+
+  const handleCompleteOnboarding = async () => {
+    // Set completed locally to immediately transition the UI
     setData((prev) => ({ ...prev, completed: true }));
+    
+    // Save onboarding details to our Express backend which records it in Supabase
+    try {
+      const response = await fetch('http://localhost:5000/api/onboarding', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errResult = await response.json();
+        console.error('Failed to store onboarding details in backend database:', errResult.error);
+      } else {
+        console.log('Onboarding data successfully synchronized with backend!');
+      }
+    } catch (err) {
+      console.error('Network failure connecting to the onboarding backend server:', err);
+    }
   };
 
   const handleReset = () => {
@@ -123,13 +187,26 @@ export default function App() {
     }
   };
 
+  // Render Admin Workspace if chosen
+  if (isAdminMode) {
+    if (isAdminLoggedIn) {
+      return <AdminDashboard onLogout={handleAdminLogout} />;
+    }
+    return (
+      <AdminLogin
+        onLoginSuccess={handleAdminLoginSuccess}
+        onBackToOnboarding={() => setIsAdminMode(false)}
+      />
+    );
+  }
+
   // Skip wizard and render dashboard if already completed
   if (data.completed) {
     return <Dashboard data={data} onReset={handleReset} />;
   }
 
-  // Calculate percentage progress (Step 1 -> 0%, Step 8 -> 100%)
-  const percentage = Math.round(((data.step - 1) / 7) * 100);
+  // Calculate percentage progress (Step 1 -> 0%, Step 6 -> 100%)
+  const percentage = Math.round(((data.step - 1) / 5) * 100);
 
   const stepTitles = [
     'Welcome',
@@ -138,8 +215,6 @@ export default function App() {
     'Academic',
     'Preferences',
     'Alerts',
-    'Consent',
-    'Success',
   ];
 
   return (
@@ -157,15 +232,26 @@ export default function App() {
           </div>
         </div>
         
-        {data.step > 1 && (
+        <div className="flex items-center gap-2">
           <button
-            onClick={handleReset}
-            className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-red-500 font-bold bg-white hover:bg-red-50 border border-gray-200 px-3 py-1.5 rounded-lg transition-all shadow-sm"
+            onClick={() => setIsAdminMode(true)}
+            className="flex items-center gap-1.5 text-[10px] text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 px-3 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer"
+            id="btn-goto-admin"
           >
-            <RefreshCw className="w-3 h-3" />
-            <span>Reset Form</span>
+            <span>Admin Portal</span>
           </button>
-        )}
+          
+          {data.step > 1 && (
+            <button
+              onClick={handleReset}
+              className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-red-500 font-bold bg-white hover:bg-red-50 border border-gray-200 px-3 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer"
+              id="btn-reset-onboarding"
+            >
+              <RefreshCw className="w-3 h-3" />
+              <span>Reset Form</span>
+            </button>
+          )}
+        </div>
       </header>
 
       {/* Main Form Center Column */}
@@ -176,7 +262,7 @@ export default function App() {
           <div className="bg-slate-50/50 border-b border-gray-100 px-6 py-5 space-y-3">
             <div className="flex items-center justify-between text-xs">
               <span className="font-extrabold text-indigo-600 tracking-wider text-[10px] uppercase">
-                Step {data.step} of 8:{' '}
+                Step {data.step} of 6:{' '}
                 <span className="text-gray-700 font-normal">{stepTitles[data.step - 1]}</span>
               </span>
               <span className="font-black text-gray-800 text-[11px] bg-white px-2 py-0.5 rounded-full border shadow-sm">
@@ -252,6 +338,7 @@ export default function App() {
                     onChange={updatePersonalInfo}
                     onNext={handleNext}
                     onBack={handleBack}
+                    onFetchProfile={fetchOnboardingData}
                   />
                 </div>
               )}
@@ -297,27 +384,8 @@ export default function App() {
                   <NotificationsStep
                     data={data.notifications}
                     onChange={updateNotifications}
-                    onNext={handleNext}
+                    onNext={handleCompleteOnboarding}
                     onBack={handleBack}
-                  />
-                </div>
-              )}
-              {data.step === 7 && (
-                <div key="step7">
-                  <PrivacyStep
-                    data={data.consent}
-                    onChange={updateConsent}
-                    onNext={handleNext}
-                    onBack={handleBack}
-                  />
-                </div>
-              )}
-              {data.step === 8 && (
-                <div key="step8">
-                  <CompletionStep
-                    fullName={data.personalInfo.fullName}
-                    role={data.role}
-                    onComplete={handleCompleteOnboarding}
                   />
                 </div>
               )}

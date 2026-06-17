@@ -1,18 +1,34 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { PersonalInfo, COUNTRIES, PRESET_AVATARS } from '../types';
-import { User, Mail, Phone, Calendar, Globe, Upload, Camera, Check } from 'lucide-react';
+import { PersonalInfo, COUNTRIES } from '../types';
+import { User, Mail, Phone, Calendar, Globe } from 'lucide-react';
 
 interface PersonalStepProps {
   data: PersonalInfo;
   onChange: (data: Partial<PersonalInfo>) => void;
   onNext: () => void;
   onBack: () => void;
+  onFetchProfile?: (email: string) => Promise<boolean>;
 }
 
-export default function PersonalStep({ data, onChange, onNext, onBack }: PersonalStepProps) {
+export default function PersonalStep({ data, onChange, onNext, onBack, onFetchProfile }: PersonalStepProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [dragActive, setDragActive] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [fetchMessage, setFetchMessage] = useState('');
+
+  const handleEmailBlur = async () => {
+    if (onFetchProfile && data.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      setLoading(true);
+      setFetchMessage('Checking for existing profile...');
+      const found = await onFetchProfile(data.email);
+      setLoading(false);
+      if (found) {
+        setFetchMessage('Existing profile found! Loaded.');
+      } else {
+        setFetchMessage('');
+      }
+    }
+  };
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -54,43 +70,6 @@ export default function PersonalStep({ data, onChange, onNext, onBack }: Persona
     }
   };
 
-  // Handle uploaded profile picture
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onChange({ profilePic: reader.result as string });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true);
-    } else if (e.type === 'dragleave') {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onChange({ profilePic: reader.result as string });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -105,80 +84,6 @@ export default function PersonalStep({ data, onChange, onNext, onBack }: Persona
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Profile Picture Configuration */}
-        <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex flex-col md:flex-row gap-6 items-center">
-          <div className="relative shrink-0">
-            <div className="w-20 h-20 rounded-full border-2 border-indigo-600 bg-gray-100 flex items-center justify-center overflow-hidden shadow-inner">
-              {data.profilePic ? (
-                <img
-                  src={data.profilePic}
-                  alt="Profile Avatar Preview"
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
-                  id="avatar-preview-img"
-                />
-              ) : (
-                <User className="w-8 h-8 text-gray-400" />
-              )}
-            </div>
-            <label className="absolute bottom-0 right-0 p-1.5 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 cursor-pointer shadow-md transition-colors">
-              <Camera className="w-3.5 h-3.5" />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-            </label>
-          </div>
-
-          <div className="flex-1 w-full text-center md:text-left">
-            <label className="block text-xs font-bold text-gray-700 mb-2">Select Avatar or Upload Custom Photo</label>
-            <div className="grid grid-cols-6 gap-2 mb-3">
-              {PRESET_AVATARS.map((avatar, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => onChange({ profilePic: avatar })}
-                  className={`relative w-8 h-8 rounded-full overflow-hidden border-2 transition-all hover:scale-110 ${
-                    data.profilePic === avatar ? 'border-indigo-600 ring-2 ring-indigo-100 scale-105' : 'border-transparent'
-                  }`}
-                >
-                  <img src={avatar} alt={`Avatar Preset ${idx}`} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                  {data.profilePic === avatar && (
-                    <div className="absolute inset-0 bg-indigo-600/30 flex items-center justify-center">
-                      <Check className="w-3 h-3 text-white stroke-[3px]" />
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-
-            {/* Custom drag zone */}
-            <div
-              onDragEnter={handleDrag}
-              onDragOver={handleDrag}
-              onDragLeave={handleDrag}
-              onDrop={handleDrop}
-              className={`border border-dashed p-3 rounded-xl text-center cursor-pointer transition-all ${
-                dragActive ? 'border-indigo-600 bg-indigo-50' : 'border-gray-300 hover:border-indigo-400 bg-white'
-              }`}
-            >
-              <label className="cursor-pointer text-[11px] text-gray-500 block">
-                <Upload className="w-3.5 h-3.5 mx-auto text-gray-400 mb-1" />
-                <span>Drag photo here or </span>
-                <span className="text-indigo-600 font-semibold underline">browse</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-              </label>
-            </div>
-          </div>
-        </div>
-
         {/* Input grids */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Full Name */}
@@ -209,6 +114,7 @@ export default function PersonalStep({ data, onChange, onNext, onBack }: Persona
                 type="email"
                 value={data.email}
                 onChange={(e) => onChange({ email: e.target.value })}
+                onBlur={handleEmailBlur}
                 className={`w-full pl-10 pr-3 py-2.5 bg-gray-50/50 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all ${
                   errors.email ? 'border-red-400 focus:border-red-400' : 'border-gray-200 focus:border-blue-500'
                 }`}
@@ -217,6 +123,11 @@ export default function PersonalStep({ data, onChange, onNext, onBack }: Persona
               />
             </div>
             {errors.email && <span className="text-[10px] text-red-500 mt-1">{errors.email}</span>}
+            {fetchMessage && (
+              <span className={`text-[10px] mt-1 ${loading ? 'text-indigo-600 animate-pulse' : 'text-emerald-600 font-semibold'}`}>
+                {fetchMessage}
+              </span>
+            )}
           </div>
 
           {/* Mobile */}

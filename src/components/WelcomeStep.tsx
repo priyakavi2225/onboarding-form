@@ -16,7 +16,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
     >
       <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-xs font-semibold mb-2">
         <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-        <span>Step 1 of 8: Welcome to EduQuest</span>
+        <span>Step 1 of 6: Welcome to EduQuest</span>
       </div>
 
       <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-gray-900 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
