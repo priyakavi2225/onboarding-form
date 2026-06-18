@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { OnboardingData, UserRole } from '../types';
+import ThemeSwitcher, { ThemeId } from './ThemeSwitcher';
 import {
   GraduationCap,
   Calendar,
@@ -28,9 +29,11 @@ import {
 interface DashboardProps {
   data: OnboardingData;
   onReset: () => void;
+  theme: ThemeId;
+  onThemeChange: (t: ThemeId) => void;
 }
 
-export default function Dashboard({ data, onReset }: DashboardProps) {
+export default function Dashboard({ data, onReset, theme, onThemeChange }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'courses' | 'quizzes' | 'settings'>('overview');
   const [quizScore, setQuizScore] = useState<number | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
@@ -82,7 +85,7 @@ export default function Dashboard({ data, onReset }: DashboardProps) {
   const personalSubjects = getSubjects();
 
   return (
-    <div className="min-h-screen bg-gray-50/50 p-4 md:p-6" id="dashboard-main-container">
+    <div className="min-h-screen theme-page-bg p-4 md:p-6" id="dashboard-main-container">
       {/* Alert banner */}
       <AnimatePresence>
         {notificationBanner && (
@@ -218,10 +221,16 @@ export default function Dashboard({ data, onReset }: DashboardProps) {
               </button>
             </div>
 
+            {/* Theme switcher */}
+            <div className="pt-2">
+              <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider mb-2 px-1">Theme</p>
+              <ThemeSwitcher theme={theme} onThemeChange={onThemeChange} />
+            </div>
+
             {/* Reset Onboarding triggering */}
             <button
               onClick={onReset}
-              className="mt-4 w-full flex items-center justify-center gap-2 py-2 border border-gray-200 text-gray-500 hover:bg-red-50 hover:text-red-600 rounded-xl text-[11px] font-bold transition-all"
+              className="mt-2 w-full flex items-center justify-center gap-2 py-2 border border-gray-200 text-gray-500 hover:bg-red-50 hover:text-red-600 rounded-xl text-[11px] font-bold transition-all"
               id="btn-edit-onboarding"
             >
               <RefreshCw className="w-3.5 h-3.5" />

@@ -10,11 +10,23 @@ import NotificationsStep from './components/NotificationsStep';
 import Dashboard from './components/Dashboard';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
+import ThemeSwitcher, { ThemeId } from './components/ThemeSwitcher';
 import { Sparkles, ArrowRight, User, Check, RefreshCw } from 'lucide-react';
+
+const THEME_KEY = 'eduquest_theme';
 
 const STORAGE_KEY = 'eduquest_onboarding_data_v2';
 
 export default function App() {
+  const [theme, setTheme] = useState<ThemeId>(() => {
+    return (localStorage.getItem(THEME_KEY) as ThemeId) || 'baby-pink';
+  });
+
+  // Apply theme to <html> and persist
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
+  }, [theme]);
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
     return !!localStorage.getItem('eduquest_admin_token');
@@ -202,8 +214,19 @@ export default function App() {
 
   // Skip wizard and render dashboard if already completed
   if (data.completed) {
-    return <Dashboard data={data} onReset={handleReset} />;
+    return <Dashboard data={data} onReset={handleReset} theme={theme} onThemeChange={setTheme} />;
   }
+
+  // Per-step accent colors used by the "All Colors" themes
+  const MULTI_STEP_COLORS = [
+    '#e04878', // Step 1 – Welcome    → Rose Pink
+    '#d4621a', // Step 2 – Profile   → Warm Peach
+    '#c49000', // Step 3 – Role      → Golden Amber
+    '#2480b8', // Step 4 – Academic  → Sky Blue
+    '#7c4cbe', // Step 5 – Prefs     → Soft Purple
+    '#208870', // Step 6 – Alerts    → Teal
+  ];
+  const isMultiColor = theme.includes('all-colors');
 
   // Calculate percentage progress (Step 1 -> 0%, Step 6 -> 100%)
   const percentage = Math.round(((data.step - 1) / 5) * 100);
@@ -218,12 +241,12 @@ export default function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100/50 flex flex-col justify-between py-6 px-4 font-sans select-none" id="onboarding-root">
+    <div className="min-h-screen theme-page-bg flex flex-col justify-between py-6 px-4 font-sans select-none" id="onboarding-root">
       
       {/* Upper header */}
       <header className="max-w-4xl w-full mx-auto flex items-center justify-between mb-4 px-2" id="onboarding-header">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold shadow-md shadow-indigo-100">
+          <div className="w-9 h-9 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold shadow-md shadow-indigo-100" id="eq-logo-badge">
             EQ
           </div>
           <div>
@@ -233,6 +256,8 @@ export default function App() {
         </div>
         
         <div className="flex items-center gap-2">
+          <ThemeSwitcher theme={theme} onThemeChange={setTheme} />
+
           <button
             onClick={() => setIsAdminMode(true)}
             className="flex items-center gap-1.5 text-[10px] text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 px-3 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer"
@@ -256,12 +281,12 @@ export default function App() {
 
       {/* Main Form Center Column */}
       <main className="flex-1 flex items-center justify-center my-4">
-        <div className="w-full max-w-2xl bg-white border border-gray-150/70 rounded-3xl shadow-xl shadow-gray-100/60 overflow-hidden flex flex-col" id="form-container-card">
+        <div className="w-full max-w-2xl bg-white border border-gray-150/70 rounded-3xl shadow-xl shadow-gray-100/60 overflow-hidden flex flex-col" id="form-container-card" data-step={data.step}>
           
           {/* TOP progress display info bar */}
           <div className="bg-slate-50/50 border-b border-gray-100 px-6 py-5 space-y-3">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-extrabold text-indigo-600 tracking-wider text-[10px] uppercase">
+              <span className="step-color-label font-extrabold text-indigo-600 tracking-wider text-[10px] uppercase">
                 Step {data.step} of 6:{' '}
                 <span className="text-gray-700 font-normal">{stepTitles[data.step - 1]}</span>
               </span>
@@ -282,15 +307,17 @@ export default function App() {
             </div>
 
             {/* Bullet List Progress Indicators displayed on Desktop */}
-            <div className="hidden md:flex justify-between items-center text-[10px] font-bold text-gray-400 pt-1">
+            <div className="hidden md:flex justify-between items-center text-[10px] font-bold text-gray-400 pt-1" id="step-progress-indicators">
               {stepTitles.map((title, idx) => {
                 const stepNum = idx + 1;
                 const isCompleted = data.step > stepNum;
                 const isActive = data.step === stepNum;
+                const accent = isMultiColor ? MULTI_STEP_COLORS[idx] : null;
 
                 return (
                   <div
                     key={title}
+                    data-step={stepNum}
                     onClick={() => {
                       // Allow backtracking dynamically if valid
                       if (stepNum < data.step) {
@@ -299,19 +326,29 @@ export default function App() {
                     }}
                     className={`flex items-center gap-1 transition-all ${
                       isCompleted
-                        ? 'text-indigo-600 cursor-pointer'
+                        ? accent ? 'cursor-pointer' : 'text-indigo-600 cursor-pointer'
                         : isActive
                         ? 'text-gray-800'
                         : 'text-gray-300'
                     }`}
+                    style={accent && isCompleted ? { color: accent } : undefined}
                   >
-                    <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] ${
-                      isCompleted 
-                        ? 'bg-indigo-600 text-white' 
-                        : isActive 
-                        ? 'border-2 border-indigo-600 text-indigo-600 bg-white' 
-                        : 'bg-gray-100 text-gray-400'
-                    }`}>
+                    <span
+                      className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] ${
+                        accent ? '' : (
+                          isCompleted
+                            ? 'bg-indigo-600 text-white'
+                            : isActive
+                            ? 'border-2 border-indigo-600 text-indigo-600 bg-white'
+                            : 'bg-gray-100 text-gray-400'
+                        )
+                      }`}
+                      style={accent ? {
+                        backgroundColor: isCompleted ? accent : isActive ? 'white' : '#f3f4f6',
+                        border: isActive ? `2px solid ${accent}` : 'none',
+                        color: isCompleted ? 'white' : isActive ? accent : '#9ca3af',
+                      } : undefined}
+                    >
                       {isCompleted ? <Check className="w-2.5 h-2.5 stroke-[3px]" /> : stepNum}
                     </span>
                     <span className={isActive ? 'underline decoration-indigo-600 underline-offset-2' : ''}>

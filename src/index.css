@@ -1,1 +1,490 @@
 @import "tailwindcss";
+
+/* =======================================================
+   EDUQUEST – 6-THEME PASTEL SYSTEM
+   Themes override Tailwind v4 CSS custom properties so
+   every indigo-* / blue-* / gray-* utility class picks
+   up the correct palette automatically.
+   ======================================================= */
+
+/* ── Baby Pink (Light) – DEFAULT ────────────────────── */
+:root,
+html[data-theme="baby-pink"] {
+  /* Primary  → Rose Pink (replaces indigo) */
+  --color-indigo-50:  #fff0f4;
+  --color-indigo-100: #ffd6e0;
+  --color-indigo-200: #ffadbf;
+  --color-indigo-300: #ff85a0;
+  --color-indigo-400: #ff5c80;
+  --color-indigo-500: #e83361;
+  --color-indigo-600: #c8224e;
+  --color-indigo-700: #a3183d;
+  --color-indigo-800: #7f0f2e;
+  --color-indigo-900: #5a0820;
+
+  /* Secondary → Deep Rose (replaces blue, used in gradients) */
+  --color-blue-50:  #fff5f7;
+  --color-blue-100: #fce8ee;
+  --color-blue-200: #f9ccdb;
+  --color-blue-300: #f4acc5;
+  --color-blue-400: #ee82aa;
+  --color-blue-500: #e55488;
+  --color-blue-600: #d42d5c;
+  --color-blue-700: #b01e48;
+  --color-blue-800: #8c1236;
+
+  /* Tinted page background */
+  --page-bg: linear-gradient(to bottom, #fff5f7, #ffeef2);
+}
+
+/* ── Baby Peach (Light) ──────────────────────────────── */
+html[data-theme="baby-peach"] {
+  /* Primary  → Warm Coral/Peach */
+  --color-indigo-50:  #fff8f0;
+  --color-indigo-100: #ffe8d0;
+  --color-indigo-200: #ffd0a8;
+  --color-indigo-300: #ffb478;
+  --color-indigo-400: #ff9448;
+  --color-indigo-500: #f07020;
+  --color-indigo-600: #d4621a;
+  --color-indigo-700: #b04e12;
+  --color-indigo-800: #8c3c08;
+  --color-indigo-900: #682c00;
+
+  /* Secondary → Orange Peach */
+  --color-blue-50:  #fff5ee;
+  --color-blue-100: #ffead8;
+  --color-blue-200: #ffd4b0;
+  --color-blue-300: #ffba88;
+  --color-blue-400: #ff9a60;
+  --color-blue-500: #ee7838;
+  --color-blue-600: #d45a20;
+  --color-blue-700: #b04210;
+  --color-blue-800: #8c2c08;
+
+  --page-bg: linear-gradient(to bottom, #fff8f2, #fff0e8);
+}
+
+/* ── Pastel Yellow (Light) ───────────────────────────── */
+html[data-theme="pastel-yellow"] {
+  /* Primary  → Deep Golden Amber */
+  --color-indigo-50:  #fefce8;
+  --color-indigo-100: #fef8c0;
+  --color-indigo-200: #feef80;
+  --color-indigo-300: #fde040;
+  --color-indigo-400: #f8cc10;
+  --color-indigo-500: #d4a800;
+  --color-indigo-600: #a88200;
+  --color-indigo-700: #866800;
+  --color-indigo-800: #644e00;
+  --color-indigo-900: #443600;
+
+  /* Secondary → Warm Amber */
+  --color-blue-50:  #fffde7;
+  --color-blue-100: #fff9c0;
+  --color-blue-200: #fff090;
+  --color-blue-300: #fee460;
+  --color-blue-400: #fad430;
+  --color-blue-500: #e4b800;
+  --color-blue-600: #c09800;
+  --color-blue-700: #9a7800;
+  --color-blue-800: #765c00;
+
+  --page-bg: linear-gradient(to bottom, #fefce8, #fef8d0);
+}
+
+/* ── Powder Blue (Light) ─────────────────────────────── */
+html[data-theme="powder-blue"] {
+  /* Primary  → Steel/Powder Blue */
+  --color-indigo-50:  #f0f8ff;
+  --color-indigo-100: #d8ecf8;
+  --color-indigo-200: #aad8f2;
+  --color-indigo-300: #7cc4ec;
+  --color-indigo-400: #52b0e4;
+  --color-indigo-500: #2e98d8;
+  --color-indigo-600: #2480b8;
+  --color-indigo-700: #1a68a0;
+  --color-indigo-800: #105280;
+  --color-indigo-900: #083c60;
+
+  /* Secondary → Sky Blue */
+  --color-blue-50:  #eaf4fc;
+  --color-blue-100: #d0e8f8;
+  --color-blue-200: #a8d4f2;
+  --color-blue-300: #80c0ec;
+  --color-blue-400: #58aae4;
+  --color-blue-500: #3694d8;
+  --color-blue-600: #2e90c8;
+  --color-blue-700: #1e78b0;
+  --color-blue-800: #126090;
+
+  --page-bg: linear-gradient(to bottom, #f0f8ff, #e4f2fc);
+}
+
+/* ── Baby Pink Dark ──────────────────────────────────── */
+html[data-theme="baby-pink-dark"] {
+  color-scheme: dark;
+
+  /* Primary  → Vivid Pink on dark */
+  --color-indigo-50:  #3a0818;
+  --color-indigo-100: #580f28;
+  --color-indigo-200: #781840;
+  --color-indigo-300: #a02058;
+  --color-indigo-400: #cc3070;
+  --color-indigo-500: #e84e88;
+  --color-indigo-600: #f070a8;
+  --color-indigo-700: #f8a8cc;
+  --color-indigo-800: #fcd0e4;
+  --color-indigo-900: #feeef4;
+
+  /* Secondary → Hot Pink */
+  --color-blue-50:  #300610;
+  --color-blue-100: #4c0c1c;
+  --color-blue-200: #6c1430;
+  --color-blue-300: #901c48;
+  --color-blue-400: #be2868;
+  --color-blue-500: #e04888;
+  --color-blue-600: #e8609a;
+  --color-blue-700: #f490c0;
+  --color-blue-800: #f8c8e0;
+
+  /* Dark neutral palette */
+  --color-white:    #200d16;
+  --color-gray-50:  #140810;
+  --color-gray-100: #1c0c1a;
+  --color-gray-200: #28122a;
+  --color-gray-300: #401840;
+  --color-gray-400: #806070;
+  --color-gray-500: #a88898;
+  --color-gray-600: #c4a8b4;
+  --color-gray-700: #dcccd8;
+  --color-gray-800: #ece6ea;
+  --color-gray-900: #f6f2f4;
+
+  --page-bg: linear-gradient(to bottom, #140810, #1c0c1a);
+}
+
+/* ── Powder Blue Dark ────────────────────────────────── */
+html[data-theme="powder-blue-dark"] {
+  color-scheme: dark;
+
+  /* Primary  → Vivid Sky Blue on dark */
+  --color-indigo-50:  #061420;
+  --color-indigo-100: #0c2038;
+  --color-indigo-200: #142e50;
+  --color-indigo-300: #204070;
+  --color-indigo-400: #2c5890;
+  --color-indigo-500: #3c78b8;
+  --color-indigo-600: #52a4d8;
+  --color-indigo-700: #82c8f0;
+  --color-indigo-800: #b8e0f8;
+  --color-indigo-900: #e4f4fc;
+
+  /* Secondary → Sky */
+  --color-blue-50:  #040e18;
+  --color-blue-100: #081828;
+  --color-blue-200: #10283e;
+  --color-blue-300: #1a3858;
+  --color-blue-400: #245080;
+  --color-blue-500: #3070a8;
+  --color-blue-600: #4490cc;
+  --color-blue-700: #74b8e8;
+  --color-blue-800: #b0d8f5;
+
+  /* Dark neutral palette */
+  --color-white:    #0c1620;
+  --color-gray-50:  #081018;
+  --color-gray-100: #0e1824;
+  --color-gray-200: #162030;
+  --color-gray-300: #243040;
+  --color-gray-400: #506070;
+  --color-gray-500: #7890a0;
+  --color-gray-600: #9cb0bc;
+  --color-gray-700: #c4d4dc;
+  --color-gray-800: #e0e8ec;
+  --color-gray-900: #f0f6f8;
+
+  --page-bg: linear-gradient(to bottom, #081018, #0e1824);
+}
+
+/* ── Base overrides for dark themes ─────────────────── */
+html[data-theme="baby-pink-dark"],
+html[data-theme="powder-blue-dark"] {
+  /* Ensure native form elements inherit theme colors */
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-800);
+}
+
+html[data-theme="baby-pink-dark"] input,
+html[data-theme="baby-pink-dark"] select,
+html[data-theme="baby-pink-dark"] textarea,
+html[data-theme="powder-blue-dark"] input,
+html[data-theme="powder-blue-dark"] select,
+html[data-theme="powder-blue-dark"] textarea {
+  color-scheme: dark;
+  color: var(--color-gray-900);
+}
+
+/* ── All Colors (Rainbow Pastel – Light) ─────────────── */
+html[data-theme="all-colors"] {
+  /* Primary (indigo) → Rose Pink */
+  --color-indigo-50:  #fff0f4;
+  --color-indigo-100: #ffd6e0;
+  --color-indigo-200: #ffadbf;
+  --color-indigo-300: #ff85a0;
+  --color-indigo-400: #ff5c80;
+  --color-indigo-500: #e83361;
+  --color-indigo-600: #e04878;
+  --color-indigo-700: #c03060;
+  --color-indigo-800: #9a1e48;
+  --color-indigo-900: #740e30;
+
+  /* Secondary (blue) → Sky Blue — creates pink→blue gradient effect */
+  --color-blue-50:  #edf8ff;
+  --color-blue-100: #d0ecf8;
+  --color-blue-200: #a4d8f2;
+  --color-blue-300: #74c4ec;
+  --color-blue-400: #48b0e4;
+  --color-blue-500: #2898d8;
+  --color-blue-600: #2490d0;
+  --color-blue-700: #1878b8;
+  --color-blue-800: #105ea0;
+
+  /* 4-colour diagonal page wash: pink → peach → yellow → blue */
+  --page-bg: linear-gradient(135deg,
+    #fff0f4  0%,
+    #fff8f0 30%,
+    #fefce8 60%,
+    #f0f8ff 100%);
+
+  /* Rainbow token used by specific element overrides below */
+  --rainbow: linear-gradient(to right, #ff88a8, #ffa868, #ffd858, #80c8f0);
+}
+
+/* Progress bar — 4-colour rainbow strip */
+html[data-theme="all-colors"] #progress-trail-bar {
+  background: var(--rainbow) !important;
+}
+
+/* Main hero/greeting banner in Dashboard */
+html[data-theme="all-colors"] #dashboard-main-container .bg-gradient-to-r {
+  background: linear-gradient(135deg,
+    #f05080 0%,
+    #e87840 35%,
+    #c89800 65%,
+    #2490d0 100%) !important;
+}
+
+/* ── All Colors Dark (Rainbow on Dark) ───────────────── */
+html[data-theme="all-colors-dark"] {
+  color-scheme: dark;
+
+  /* Primary (indigo) → Vivid Pink */
+  --color-indigo-50:  #3a0818;
+  --color-indigo-100: #580f28;
+  --color-indigo-200: #781840;
+  --color-indigo-300: #a02058;
+  --color-indigo-400: #cc3070;
+  --color-indigo-500: #e84e88;
+  --color-indigo-600: #f070a8;
+  --color-indigo-700: #f8a8cc;
+  --color-indigo-800: #fcd0e4;
+  --color-indigo-900: #feeef4;
+
+  /* Secondary (blue) → Vivid Sky Blue */
+  --color-blue-50:  #04101c;
+  --color-blue-100: #081c30;
+  --color-blue-200: #102840;
+  --color-blue-300: #1c3c60;
+  --color-blue-400: #285888;
+  --color-blue-500: #3878b8;
+  --color-blue-600: #4e9cd4;
+  --color-blue-700: #80c4f0;
+  --color-blue-800: #b8e0f8;
+
+  /* Dark neutral palette */
+  --color-white:    #0e0818;
+  --color-gray-50:  #090510;
+  --color-gray-100: #120b1c;
+  --color-gray-200: #1c1228;
+  --color-gray-300: #2e1c40;
+  --color-gray-400: #685880;
+  --color-gray-500: #9888a8;
+  --color-gray-600: #c0acd0;
+  --color-gray-700: #dcd0ec;
+  --color-gray-800: #ede8f5;
+  --color-gray-900: #f6f3fb;
+
+  --page-bg: linear-gradient(135deg,
+    #140810 0%,
+    #101020 50%,
+    #081828 100%);
+
+  --rainbow: linear-gradient(to right, #f070a8, #e08040, #c8a800, #4e9cd4);
+}
+
+html[data-theme="all-colors-dark"] #progress-trail-bar {
+  background: var(--rainbow) !important;
+}
+
+html[data-theme="all-colors-dark"] #dashboard-main-container .bg-gradient-to-r {
+  background: linear-gradient(135deg,
+    #c83068 0%,
+    #b05818 35%,
+    #888000 65%,
+    #1868a8 100%) !important;
+}
+
+/* ── Base overrides for dark themes ─────────────────── */
+html[data-theme="baby-pink-dark"],
+html[data-theme="powder-blue-dark"],
+html[data-theme="all-colors-dark"] {
+  /* Ensure native form elements inherit theme colors */
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-800);
+}
+
+html[data-theme="baby-pink-dark"] input,
+html[data-theme="baby-pink-dark"] select,
+html[data-theme="baby-pink-dark"] textarea,
+html[data-theme="powder-blue-dark"] input,
+html[data-theme="powder-blue-dark"] select,
+html[data-theme="powder-blue-dark"] textarea,
+html[data-theme="all-colors-dark"] input,
+html[data-theme="all-colors-dark"] select,
+html[data-theme="all-colors-dark"] textarea {
+  color-scheme: dark;
+  color: var(--color-gray-900);
+}
+
+/* ── Theme-aware page backgrounds ───────────────────── */
+.theme-page-bg {
+  background: var(--page-bg, linear-gradient(to bottom, #f9fafb, rgba(243,244,246,0.5)));
+}
+
+/* =======================================================
+   ALL COLORS – Per-element distinct color distribution
+   Each major UI piece gets its own dedicated accent.
+   ======================================================= */
+
+/* EQ Logo badge → dedicated Sky Blue */
+html[data-theme="all-colors"] #eq-logo-badge {
+  background: linear-gradient(135deg, #2490d0 0%, #52b8e8 100%) !important;
+  box-shadow: 0 4px 12px rgba(36, 144, 208, 0.35) !important;
+}
+html[data-theme="all-colors-dark"] #eq-logo-badge {
+  background: linear-gradient(135deg, #3878b8 0%, #60a8e0 100%) !important;
+  box-shadow: 0 4px 12px rgba(96, 168, 224, 0.4) !important;
+}
+
+/* Admin Portal button → Amber / Golden Yellow */
+html[data-theme="all-colors"] #btn-goto-admin {
+  background-color: #fefce8 !important;
+  border-color: #fde68a !important;
+  color: #a88200 !important;
+}
+html[data-theme="all-colors"] #btn-goto-admin:hover {
+  background-color: #fef3c7 !important;
+}
+html[data-theme="all-colors-dark"] #btn-goto-admin {
+  background-color: #2a2000 !important;
+  border-color: #5a4800 !important;
+  color: #fde68a !important;
+}
+
+/* Form card progress header strip → soft 4-color gradient */
+html[data-theme="all-colors"] #form-container-card > div:first-child {
+  background: linear-gradient(to right, #fff5f7, #fff8f2, #fefde8, #f0f8ff) !important;
+  border-bottom-color: transparent !important;
+}
+html[data-theme="all-colors-dark"] #form-container-card > div:first-child {
+  background: linear-gradient(to right, #280d18, #281800, #1a1c00, #081828) !important;
+  border-bottom-color: transparent !important;
+}
+
+/* "Step N of 6:" label → changes color per active step */
+html[data-theme="all-colors"] #form-container-card[data-step="1"] .step-color-label,
+html[data-theme="all-colors-dark"] #form-container-card[data-step="1"] .step-color-label { color: #e04878 !important; }
+
+html[data-theme="all-colors"] #form-container-card[data-step="2"] .step-color-label,
+html[data-theme="all-colors-dark"] #form-container-card[data-step="2"] .step-color-label { color: #d4621a !important; }
+
+html[data-theme="all-colors"] #form-container-card[data-step="3"] .step-color-label,
+html[data-theme="all-colors-dark"] #form-container-card[data-step="3"] .step-color-label { color: #c49000 !important; }
+
+html[data-theme="all-colors"] #form-container-card[data-step="4"] .step-color-label,
+html[data-theme="all-colors-dark"] #form-container-card[data-step="4"] .step-color-label { color: #2480b8 !important; }
+
+html[data-theme="all-colors"] #form-container-card[data-step="5"] .step-color-label,
+html[data-theme="all-colors-dark"] #form-container-card[data-step="5"] .step-color-label { color: #7c4cbe !important; }
+
+html[data-theme="all-colors"] #form-container-card[data-step="6"] .step-color-label,
+html[data-theme="all-colors-dark"] #form-container-card[data-step="6"] .step-color-label { color: #208870 !important; }
+
+/* "Get Started" button → Pink gradient */
+html[data-theme="all-colors"] #btn-get-started {
+  background: linear-gradient(to right, #e04878, #ff88a8) !important;
+  box-shadow: 0 4px 14px rgba(224, 72, 120, 0.4) !important;
+}
+html[data-theme="all-colors-dark"] #btn-get-started {
+  background: linear-gradient(to right, #f070a8, #f8a8cc) !important;
+}
+
+/* Next / Submit buttons in each step → Sky Blue gradient */
+html[data-theme="all-colors"] #btn-next-personal,
+html[data-theme="all-colors"] #btn-next-role,
+html[data-theme="all-colors"] #btn-next-educational,
+html[data-theme="all-colors"] #btn-next-preferences,
+html[data-theme="all-colors"] #btn-next-notifications {
+  background: linear-gradient(to right, #2490d0, #52b8e8) !important;
+  box-shadow: 0 4px 14px rgba(36, 144, 208, 0.4) !important;
+}
+html[data-theme="all-colors-dark"] #btn-next-personal,
+html[data-theme="all-colors-dark"] #btn-next-role,
+html[data-theme="all-colors-dark"] #btn-next-educational,
+html[data-theme="all-colors-dark"] #btn-next-preferences,
+html[data-theme="all-colors-dark"] #btn-next-notifications {
+  background: linear-gradient(to right, #3878b8, #60a8e0) !important;
+}
+
+/* Welcome step feature cards → each gets its own accent */
+html[data-theme="all-colors"] #welcome-step-container .grid > div:nth-child(1) {
+  background: #fff0f4 !important;
+  border-color: #ffd6e0 !important;
+}
+html[data-theme="all-colors"] #welcome-step-container .grid > div:nth-child(2) {
+  background: #fefce8 !important;
+  border-color: #fef08a !important;
+}
+html[data-theme="all-colors"] #welcome-step-container .grid > div:nth-child(3) {
+  background: #f0f8ff !important;
+  border-color: #d0ecf8 !important;
+}
+
+/* Dashboard hero banner → full 4-color rainbow */
+html[data-theme="all-colors"] #dashboard-main-container .bg-gradient-to-r {
+  background: linear-gradient(135deg,
+    #e04878 0%,
+    #d4621a 30%,
+    #c49000 65%,
+    #2480b8 100%) !important;
+}
+html[data-theme="all-colors-dark"] #dashboard-main-container .bg-gradient-to-r {
+  background: linear-gradient(135deg,
+    #a82850 0%,
+    #a04010 30%,
+    #906800 65%,
+    #1460a0 100%) !important;
+}
+
+/* Progress bar — 4-colour rainbow strip */
+html[data-theme="all-colors"] #progress-trail-bar,
+html[data-theme="all-colors-dark"] #progress-trail-bar {
+  background: linear-gradient(to right,
+    #e04878 0%,
+    #d4621a 33%,
+    #c49000 66%,
+    #2480b8 100%) !important;
+}
+
+
