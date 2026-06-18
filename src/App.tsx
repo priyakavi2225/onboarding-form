@@ -155,7 +155,7 @@ export default function App() {
 
   const fetchOnboardingData = async (email: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/onboarding/${encodeURIComponent(email)}`);
+      const response = await fetch(`/api/onboarding/${encodeURIComponent(email)}`);
       if (response.ok) {
         const fetchedData = await response.json();
         setData(fetchedData);
@@ -173,7 +173,7 @@ export default function App() {
     
     // Save onboarding details to our Express backend which records it in Supabase
     try {
-      const response = await fetch('http://localhost:5000/api/onboarding', {
+      const response = await fetch('/api/onboarding', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -246,34 +246,35 @@ export default function App() {
       {/* Upper header */}
       <header className="max-w-4xl w-full mx-auto flex items-center justify-between mb-4 px-2" id="onboarding-header">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold shadow-md shadow-indigo-100" id="eq-logo-badge">
+          <div className="w-9 h-9 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold shadow-md shadow-indigo-100 shrink-0" id="eq-logo-badge">
             EQ
           </div>
-          <div>
+          <div className="hidden xs:block">
             <h1 className="text-sm font-black text-gray-800 tracking-wide uppercase">EduQuest</h1>
             <p className="text-[9px] text-gray-400 font-semibold tracking-wider">Enterprise Study Pathway</p>
           </div>
         </div>
         
-        <div className="flex items-center gap-2">
-          <ThemeSwitcher theme={theme} onThemeChange={setTheme} />
+        <div className="flex items-center gap-1.5">
+          <ThemeSwitcher theme={theme} onThemeChange={setTheme} compact />
 
           <button
             onClick={() => setIsAdminMode(true)}
-            className="flex items-center gap-1.5 text-[10px] text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 px-3 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer"
+            className="flex items-center gap-1.5 text-[10px] text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 px-2 sm:px-3 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer"
             id="btn-goto-admin"
           >
-            <span>Admin Portal</span>
+            <User className="w-3 h-3 sm:hidden" />
+            <span className="hidden sm:inline">Admin Portal</span>
           </button>
           
           {data.step > 1 && (
             <button
               onClick={handleReset}
-              className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-red-500 font-bold bg-white hover:bg-red-50 border border-gray-200 px-3 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer"
+              className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-red-500 font-bold bg-white hover:bg-red-50 border border-gray-200 px-2 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer"
               id="btn-reset-onboarding"
             >
               <RefreshCw className="w-3 h-3" />
-              <span>Reset Form</span>
+              <span className="hidden sm:inline">Reset Form</span>
             </button>
           )}
         </div>
@@ -281,10 +282,10 @@ export default function App() {
 
       {/* Main Form Center Column */}
       <main className="flex-1 flex items-center justify-center my-4">
-        <div className="w-full max-w-2xl bg-white border border-gray-150/70 rounded-3xl shadow-xl shadow-gray-100/60 overflow-hidden flex flex-col" id="form-container-card" data-step={data.step}>
+        <div className="w-full max-w-2xl bg-white border border-gray-200/70 rounded-2xl sm:rounded-3xl shadow-xl shadow-gray-100/60 overflow-hidden flex flex-col" id="form-container-card" data-step={data.step}>
           
           {/* TOP progress display info bar */}
-          <div className="bg-slate-50/50 border-b border-gray-100 px-6 py-5 space-y-3">
+          <div className="bg-slate-50/50 border-b border-gray-100 px-4 sm:px-6 py-4 sm:py-5 space-y-3">
             <div className="flex items-center justify-between text-xs">
               <span className="step-color-label font-extrabold text-indigo-600 tracking-wider text-[10px] uppercase">
                 Step {data.step} of 6:{' '}
@@ -361,7 +362,7 @@ export default function App() {
           </div>
 
           {/* Core step router */}
-          <div className="p-6 md:p-8 flex-1">
+          <div className="p-4 sm:p-6 md:p-8 flex-1">
             <AnimatePresence mode="wait">
               {data.step === 1 && (
                 <div key="step1">

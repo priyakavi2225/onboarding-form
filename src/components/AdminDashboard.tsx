@@ -17,6 +17,8 @@ import {
   FileText,
   Settings,
   RefreshCw,
+  Menu,
+  X,
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -27,6 +29,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<
     'dashboard' | 'applications' | 'employees' | 'documents' | 'reports' | 'settings'
   >('dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [records, setRecords] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +56,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:5000/api/admin/onboarding');
+      const response = await fetch('/api/admin/onboarding');
       if (!response.ok) throw new Error('Failed to retrieve profiles from server.');
       const data = await response.json();
       setRecords(data);
@@ -78,7 +81,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       const record = records.find((r) => r.id === profileId);
       if (!record) return;
       const payload = { ...record, status };
-      const response = await fetch(`http://localhost:5000/api/admin/onboarding/${profileId}`, {
+      const response = await fetch(`/api/admin/onboarding/${profileId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -107,7 +110,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         status: editStatus,
         adminInfo: { ...selectedRecord.adminInfo, department: assignDept, roleTitle: assignTitle, reportingManager: assignManager },
       };
-      const response = await fetch(`http://localhost:5000/api/admin/onboarding/${selectedRecord.id}`, {
+      const response = await fetch(`/api/admin/onboarding/${selectedRecord.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedRecord),
@@ -128,7 +131,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const handleDeleteRecord = async (profileId: string) => {
     if (!window.confirm('Are you sure you want to permanently delete this onboarding record?')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/onboarding/${profileId}`, { method: 'DELETE' });
+      const response = await fetch(`/api/admin/onboarding/${profileId}`, { method: 'DELETE' });
       if (response.ok) {
         showNotification('Profile deleted.');
         fetchRecords();
@@ -211,7 +214,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100/50 flex font-sans select-none" id="admin-dashboard-container">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100/50 flex font-sans select-none overflow-x-hidden" id="admin-dashboard-container">
 
       {/* Toast notification */}
       <AnimatePresence>
@@ -228,30 +231,123 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         )}
       </AnimatePresence>
 
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* ── SIDEBAR ── */}
-      <aside className="w-[240px] shrink-0 bg-white border-r border-gray-150/70 flex flex-col justify-between p-5 shadow-sm">
+      <aside className={`fixed lg:relative top-0 bottom-0 left-0 z-50 w-[240px] shrink-0 bg-white border-r border-gray-150/70 flex flex-col justify-between p-5 shadow-sm transition-transform duration-300 lg:translate-x-0 ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
         <div className="space-y-5">
           {/* Brand */}
-          <div className="flex items-center gap-2.5 px-1">
-            <div className="w-9 h-9 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold shadow-md shadow-indigo-100">
-              EQ
+          <div className="flex items-center justify-between px-1">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold shadow-md shadow-indigo-100">
+                EQ
+              </div>
+              <div>
+                <h1 className="text-sm font-black text-gray-800 tracking-wide uppercase">EduQuest</h1>
+                <p className="text-[9px] text-gray-400 font-semibold tracking-wider">Admin Workspace</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-sm font-black text-gray-800 tracking-wide uppercase">EduQuest</h1>
-              <p className="text-[9px] text-gray-400 font-semibold tracking-wider">Admin Workspace</p>
-            </div>
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="lg:hidden p-1.5 border border-gray-200 hover:bg-gray-50 text-gray-400 hover:text-gray-700 rounded-lg cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
           <hr className="border-gray-100" />
 
           {/* Nav */}
           <nav className="space-y-1">
-            <NavBtn tab="dashboard" icon={Layers} label="Dashboard Overview" />
-            <NavBtn tab="applications" icon={FileText} label="Onboarding Reviews" badge={pendingReviews} />
-            <NavBtn tab="employees" icon={Users} label="Employee Directory" />
-            <NavBtn tab="documents" icon={FileCheck} label="Document Center" />
-            <NavBtn tab="reports" icon={Download} label="Reports Export" />
-            <NavBtn tab="settings" icon={Settings} label="Settings & Security" />
+            <button
+              onClick={() => { setActiveTab('dashboard'); setIsSidebarOpen(false); }}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'dashboard'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-indigo-100'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Layers className="w-4 h-4" />
+                <span>Dashboard Overview</span>
+              </div>
+            </button>
+            <button
+              onClick={() => { setActiveTab('applications'); setIsSidebarOpen(false); }}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'applications'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-indigo-100'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <FileText className="w-4 h-4" />
+                <span>Onboarding Reviews</span>
+              </div>
+              {pendingReviews > 0 && (
+                <span className="bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">{pendingReviews}</span>
+              )}
+            </button>
+            <button
+              onClick={() => { setActiveTab('employees'); setIsSidebarOpen(false); }}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'employees'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-indigo-100'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Users className="w-4 h-4" />
+                <span>Employee Directory</span>
+              </div>
+            </button>
+            <button
+              onClick={() => { setActiveTab('documents'); setIsSidebarOpen(false); }}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'documents'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-indigo-100'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <FileCheck className="w-4 h-4" />
+                <span>Document Center</span>
+              </div>
+            </button>
+            <button
+              onClick={() => { setActiveTab('reports'); setIsSidebarOpen(false); }}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'reports'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-indigo-100'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Download className="w-4 h-4" />
+                <span>Reports Export</span>
+              </div>
+            </button>
+            <button
+              onClick={() => { setActiveTab('settings'); setIsSidebarOpen(false); }}
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'settings'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-indigo-100'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Settings className="w-4 h-4" />
+                <span>Settings & Security</span>
+              </div>
+            </button>
           </nav>
         </div>
 
@@ -280,15 +376,23 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       <main className="flex-1 flex flex-col p-6 overflow-y-auto">
 
         {/* Top header bar */}
-        <header className="flex justify-between items-center pb-4 mb-6 border-b border-gray-100">
-          <div>
-            <h2 className="text-lg font-extrabold tracking-tight text-gray-900 capitalize">{activeTab} Workspace</h2>
-            <p className="text-xs text-gray-400 mt-0.5">Manage, verify, and complete enterprise user onboarding tasks.</p>
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 mb-6 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden p-2 -ml-2 border border-gray-200 hover:bg-gray-50 text-gray-400 hover:text-gray-700 rounded-xl transition-all cursor-pointer"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div>
+              <h2 className="text-lg font-extrabold tracking-tight text-gray-900 capitalize">{activeTab} Workspace</h2>
+              <p className="text-xs text-gray-400 mt-0.5">Manage, verify, and complete enterprise user onboarding tasks.</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <button
               onClick={fetchRecords}
-              className="p-2 border border-gray-200 hover:bg-gray-50 text-gray-400 hover:text-gray-700 rounded-xl transition-all"
+              className="p-2 border border-gray-200 hover:bg-gray-50 text-gray-400 hover:text-gray-700 rounded-xl transition-all cursor-pointer"
               title="Refresh records"
             >
               <RefreshCw className="w-4 h-4" />
@@ -321,7 +425,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
             {activeTab === 'dashboard' && (
               <div className="space-y-6">
                 {/* KPI cards */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4">
                   {[
                     { label: 'Total Applications', value: totalApplications, icon: Users, color: 'blue', sub: 'Submitted in database' },
                     { label: 'Pending Review', value: pendingReviews, icon: Clock, color: 'amber', sub: 'Requires manual audit' },
@@ -422,9 +526,10 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
 
                 {/* Table */}
                 <div className="bg-white border border-gray-150/70 rounded-3xl overflow-hidden shadow-sm">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr className="border-b border-gray-100 bg-gray-50/50 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse min-w-[700px]">
+                      <thead>
+                        <tr className="border-b border-gray-100 bg-gray-50/50 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                         <th className="p-4">Name</th>
                         <th className="p-4">Role</th>
                         <th className="p-4">Country</th>
@@ -475,6 +580,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                   </table>
                 </div>
               </div>
+              </div>
             )}
 
             {/* ── TAB: EMPLOYEES ── */}
@@ -491,9 +597,10 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                   />
                 </div>
                 <div className="bg-white border border-gray-150/70 rounded-3xl overflow-hidden shadow-sm">
-                  <table className="w-full text-left border-collapse">
-                    <thead>
-                      <tr className="border-b border-gray-100 bg-gray-50/50 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse min-w-[700px]">
+                      <thead>
+                        <tr className="border-b border-gray-100 bg-gray-50/50 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                         <th className="p-4">Employee</th>
                         <th className="p-4">Department</th>
                         <th className="p-4">Designation</th>
@@ -542,6 +649,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                     </tbody>
                   </table>
                 </div>
+              </div>
               </div>
             )}
 
@@ -766,7 +874,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-lg bg-white border border-gray-150/70 rounded-3xl overflow-hidden shadow-2xl flex flex-col"
+            className="w-full max-w-lg bg-white border border-gray-150/70 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]"
           >
             <div className="p-5 border-b border-gray-100 bg-slate-50/50 flex justify-between items-start">
               <div>
@@ -776,8 +884,8 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
               <button onClick={() => { setIsEditModalOpen(false); setSelectedRecord(null); }} className="text-gray-400 hover:text-gray-700 font-bold text-lg leading-none">✕</button>
             </div>
 
-            <form onSubmit={handleSaveEdit}>
-              <div className="p-6 space-y-4 text-xs">
+            <form onSubmit={handleSaveEdit} className="flex-1 flex flex-col overflow-hidden">
+              <div className="p-6 space-y-4 text-xs overflow-y-auto flex-1">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col space-y-1 col-span-2">
                     <label className="text-[10px] text-gray-500 font-bold uppercase">Full Name *</label>

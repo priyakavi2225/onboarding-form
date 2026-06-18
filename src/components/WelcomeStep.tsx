@@ -45,21 +45,27 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 w-full max-w-md text-left mt-2">
-        <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
-          <BookOpen className="w-5 h-5 text-blue-600 mb-1" />
-          <h3 className="text-xs font-bold text-gray-800">Interactive</h3>
-          <p className="text-[10px] text-gray-500">Live lessons & questions.</p>
+      <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 w-full max-w-md text-left mt-2">
+        <div className="bg-gray-50 p-3 rounded-xl border border-gray-100 flex xs:flex-col items-center xs:items-start gap-3 xs:gap-1">
+          <BookOpen className="w-5 h-5 text-blue-600 shrink-0" />
+          <div>
+            <h3 className="text-xs font-bold text-gray-800">Interactive</h3>
+            <p className="text-[10px] text-gray-500">Live lessons &amp; questions.</p>
+          </div>
         </div>
-        <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
-          <Sparkles className="w-5 h-5 text-emerald-600 mb-1" />
-          <h3 className="text-xs font-bold text-gray-800">Adaptive AI</h3>
-          <p className="text-[10px] text-gray-500">Custom difficulty matching.</p>
+        <div className="bg-gray-50 p-3 rounded-xl border border-gray-100 flex xs:flex-col items-center xs:items-start gap-3 xs:gap-1">
+          <Sparkles className="w-5 h-5 text-emerald-600 shrink-0" />
+          <div>
+            <h3 className="text-xs font-bold text-gray-800">Adaptive AI</h3>
+            <p className="text-[10px] text-gray-500">Custom difficulty matching.</p>
+          </div>
         </div>
-        <div className="bg-gray-50 p-3 rounded-xl border border-gray-100">
-          <Compass className="w-5 h-5 text-indigo-600 mb-1" />
-          <h3 className="text-xs font-bold text-gray-800">Real-time</h3>
-          <p className="text-[10px] text-gray-500">Monitor skill analytics.</p>
+        <div className="bg-gray-50 p-3 rounded-xl border border-gray-100 flex xs:flex-col items-center xs:items-start gap-3 xs:gap-1">
+          <Compass className="w-5 h-5 text-indigo-600 shrink-0" />
+          <div>
+            <h3 className="text-xs font-bold text-gray-800">Real-time</h3>
+            <p className="text-[10px] text-gray-500">Monitor skill analytics.</p>
+          </div>
         </div>
       </div>
 

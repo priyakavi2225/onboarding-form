@@ -19,7 +19,7 @@ export default function AdminLogin({ onLoginSuccess, onBackToOnboarding }: Admin
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:5000/api/admin/login', {
+      const response = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -45,12 +45,12 @@ export default function AdminLogin({ onLoginSuccess, onBackToOnboarding }: Admin
       id="admin-login-root"
     >
       {/* Header — mirrors the onboarding header */}
-      <header className="max-w-4xl w-full mx-auto flex items-center justify-between mb-4 px-2">
+      <header className="max-w-4xl w-full mx-auto flex items-center justify-between mb-4 px-2" id="admin-login-header">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold shadow-md shadow-indigo-100">
+          <div className="w-9 h-9 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-extrabold shadow-md shadow-indigo-100 shrink-0">
             EQ
           </div>
-          <div>
+          <div className="hidden sm:block">
             <h1 className="text-sm font-black text-gray-800 tracking-wide uppercase">EduQuest</h1>
             <p className="text-[9px] text-gray-400 font-semibold tracking-wider">Enterprise Study Pathway</p>
           </div>
@@ -59,9 +59,10 @@ export default function AdminLogin({ onLoginSuccess, onBackToOnboarding }: Admin
         <button
           type="button"
           onClick={onBackToOnboarding}
-          className="text-[10px] text-gray-400 hover:text-gray-600 font-bold bg-white hover:bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer"
+          className="text-[10px] text-gray-400 hover:text-gray-600 font-bold bg-white hover:bg-gray-50 border border-gray-200 px-2 sm:px-3 py-1.5 rounded-lg transition-all shadow-sm cursor-pointer"
         >
-          ← Back to Onboarding
+          <span className="hidden sm:inline">← Back to Onboarding</span>
+          <span className="inline sm:hidden">← Back</span>
         </button>
       </header>
 

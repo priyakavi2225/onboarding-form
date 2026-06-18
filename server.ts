@@ -576,7 +576,12 @@ app.delete('/api/admin/onboarding/:profileId', async (req, res) => {
   }
 });
 
+// Export the app for serverless/Vercel support
+export default app;
+
 // Start the server listener
-app.listen(PORT, () => {
-  console.log(`Backend server successfully listening on port ${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Backend server successfully listening on port ${PORT}`);
+  });
+}

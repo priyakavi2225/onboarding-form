@@ -141,10 +141,10 @@ export default function ThemeSwitcher({ theme, onThemeChange, compact = false }:
         <Palette className="w-3 h-3" />
       </button>
 
-      {/* Popover */}
+      {/* Popover – right-anchored on desktop, left-anchored on mobile */}
       {open && (
         <div
-          className="absolute right-0 top-full mt-2 z-50 bg-white border border-gray-100 rounded-2xl shadow-xl p-4 w-64"
+          className="absolute right-0 sm:right-0 top-full mt-2 z-50 bg-white border border-gray-100 rounded-2xl shadow-xl p-4 w-[min(260px,calc(100vw-1rem))]"
           style={{ backdropFilter: 'blur(8px)' }}
           id="theme-switcher-popover"
         >

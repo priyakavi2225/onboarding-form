@@ -1,0 +1,39 @@
+{
+  "name": "EduQuest – Enterprise Study Pathway",
+  "short_name": "EduQuest",
+  "description": "Personalise your learning pathway with EduQuest's adaptive onboarding.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff5f7",
+  "theme_color": "#c8224e",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Start Onboarding",
+      "url": "/",
+      "description": "Begin your personalised learning setup"
+    }
+  ]
+}
